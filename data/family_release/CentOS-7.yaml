@@ -1,0 +1,2 @@
+---
+polkit::set_admin_group: true
