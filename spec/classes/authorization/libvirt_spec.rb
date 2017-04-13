@@ -12,13 +12,21 @@ describe 'polkit::authorization::libvirt' do
           :ensure => 'present',
           :group  => 'administrators'
         }}
-        it { is_expected.to compile.with_all_deps }
         it { is_expected.to create_class('polkit::authorization::libvirt') }
-        it { is_expected.to create_polkit__authorization__rule('Allow users to use libvirt').with({
-          :ensure   => 'present',
-          :priority => 50,
-          :rulesd   => '/etc/polkit-1/rules.d',
-          :content  => <<-EOF
+      end
+
+      if facts[:os][:release][:major].to_i == 6
+        next
+        # context 'on EL6' do
+        #   it { is.expected_to compile.and_raise_error(/EL6 does not support javascript/) }
+        # end
+      else
+        context 'on EL7' do
+          it { is_expected.to create_polkit__authorization__rule('Allow users to use libvirt').with({
+            :ensure   => 'present',
+            :priority => 50,
+            :rulesd   => '/etc/polkit-1/rules.d',
+            :content  => <<-EOF
 // Allow members of the `administrators` group to use libvirt with qemu:///system
 polkit.addRule(function(action, subject) {
   if (action.id == "org.libvirt.unix.manage") {
@@ -27,9 +35,11 @@ polkit.addRule(function(action, subject) {
     }
   }
 });
-          EOF
-        }) }
+            EOF
+          }) }
+        end
       end
+
 
     end
   end

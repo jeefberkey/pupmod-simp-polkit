@@ -18,7 +18,7 @@ class polkit::authorization::libvirt (
   Integer[0,99]            $priority,
   Stdlib::AbsolutePath     $rulesd,
 ) {
-  if $facts['os']['release']['major'] == 6 {
+  if $facts['os']['release']['major'] == '6' {
     fail('The version of Polkit available on EL6 does not support javascript configuration')
   }
 
