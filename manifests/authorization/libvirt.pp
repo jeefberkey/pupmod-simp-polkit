@@ -22,11 +22,13 @@ class polkit::authorization::libvirt (
     fail('The version of Polkit available on EL6 does not support javascript configuration')
   }
 
+  $_condition = "(action.id == 'org.libvirt.unix.manage') && subject.local && subject.active && subject.isInGroup('${group}')"
+
   $content = @("EOF")
+  // This file is managed by Puppet
   // Allow members of the `${group}` group to use libvirt with qemu:///system
   polkit.addRule(function(action, subject) {
-    if (action.id == "org.libvirt.unix.manage") {
-      if (subject.local && subject.active && subject.isInGroup("${group}")) {
+    if (${_condition}) {
         return polkit.Result.YES;
       }
     }

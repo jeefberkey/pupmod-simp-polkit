@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe 'polkit::authorization::libvirt' do
-  on_supported_os.each do |os, facts|
+  supported_os = on_supported_os.delete_if { |e| e =~ /6/ } #TODO do this right
+  supported_os.each do |os, facts|
     context "on #{os}" do
       let(:facts) do
         facts
@@ -22,6 +23,10 @@ describe 'polkit::authorization::libvirt' do
         # end
       else
         context 'on EL7' do
+          let(:params) {{
+            :ensure => 'present',
+            :group  => 'administrators'
+          }}
           it { is_expected.to create_polkit__authorization__rule('Allow users to use libvirt').with({
             :ensure   => 'present',
             :priority => 50,
