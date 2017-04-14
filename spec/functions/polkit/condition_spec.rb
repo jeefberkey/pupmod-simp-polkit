@@ -12,12 +12,6 @@ describe 'polkit::condition' do
   # end
 
   it { is_expected.to run.with_params(
-      'org.libvirt.unix.manage',
-      { 'group'  => nil, 'user'   => nil }
-    ).and_raise_error(/One of `user` or `group` must be specified/i)
-  }
-
-  it { is_expected.to run.with_params(
     'org.libvirt.unix.manage',
     { 'notaparam' => 'break' }
     ).and_raise_error(/unrecognized key 'notaparam'/i)

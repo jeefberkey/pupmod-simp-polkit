@@ -21,6 +21,8 @@ define polkit::authorization::rule (
   file { "${rulesd}/${priority}-${_name}.rules":
     ensure  => $ensure,
     content => $content,
+    owner   => 'root',
+    group   => 'root',
     mode    => '0644',
   }
 
