@@ -1,7 +1,0 @@
----
-polkit::package_ensure: installed
-polkit::admin_group: administrators
-
-polkit::authorization::libvirt::priority: 50
-polkit::authorization::libvirt::rulesd: /etc/polkit-1/rules.d
-

@@ -14,18 +14,26 @@
 #
 define polkit::authorization::basic_policy (
   Enum['present','absent'] $ensure,
-  String                   $action_id,
   Polkit::Result           $result,
+  Optional[String]         $action_id = undef,
   Optional[String]         $group     = undef,
   Optional[String]         $user      = undef,
   Boolean                  $local     = false,
   Boolean                  $active    = false,
   Optional[String]         $condition = undef,
-  Integer[0,99]            $priority  = 51,
+  Integer[0,99]            $priority  = 10,
   Stdlib::AbsolutePath     $rulesd    = '/etc/polkit-1/rules.d',
 ) {
-  if !$condition and (!$user and !$group) {
-    fail('One of $user or $group must be specified')
+  if !$condition {
+    if (!$user and !$group) {
+      fail('One of $user or $group must be specified')
+    }
+    if !$action_id {
+      fail('If $condition is not specified, $action_id must be')
+    }
+  }
+  if $facts['os']['release']['major'] == '6' {
+    fail('The version of Polkit available on EL6 does not support javascript configuration')
   }
 
   $_opts = {

@@ -10,10 +10,10 @@
 # @param rulesd Location of the poklit rules directory
 #
 define polkit::authorization::rule (
-  Enum['present','absent']                $ensure,
-  Optional[String]                        $content,
-  Integer[0,99]                           $priority  = 10,
-  Stdlib::AbsolutePath                    $rulesd    = '/etc/polkit-1/rules.d'
+  Enum['present','absent'] $ensure,
+  Optional[String]         $content,
+  Integer[0,99]            $priority = 10,
+  Stdlib::AbsolutePath     $rulesd   = '/etc/polkit-1/rules.d'
 ) {
 
   $_name = regsubst($name,'\/','_')

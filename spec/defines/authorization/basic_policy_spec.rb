@@ -31,6 +31,50 @@ polkit.addRule(function(action, subject) {
         }) }
       end
 
+      context 'deny a user to do an action' do
+        let(:title) { 'test' }
+        let(:params) {{
+          :ensure    => 'present',
+          :result    => 'no',
+          :action_id => 'an.action',
+          :user      => 'person',
+        }}
+        it { is_expected.to create_polkit__authorization__rule('test').with({
+          :ensure => 'present',
+          :content => <<-EOF
+// This file is managed by Puppet
+polkit.addRule(function(action, subject) {
+  if ((action.id == 'an.action') && subject.user == 'person') {
+      return polkit.Result.NO;
+    }
+  }
+});
+          EOF
+        }) }
+      end
+
+      context 'with a custom conditional set' do
+        let(:title) { 'test' }
+        let(:params) {{
+          :ensure    => 'present',
+          :result    => 'auth_admin',
+          :condition => 'some whacky javascript hack'
+        }}
+        it { is_expected.to create_polkit__authorization__rule('test').with({
+          :ensure => 'present',
+          :content => <<-EOF
+// This file is managed by Puppet
+polkit.addRule(function(action, subject) {
+  if (some whacky javascript hack) {
+      return polkit.Result.AUTH_ADMIN;
+    }
+  }
+});
+          EOF
+        }) }
+      end
+
+
     end
   end
 end
